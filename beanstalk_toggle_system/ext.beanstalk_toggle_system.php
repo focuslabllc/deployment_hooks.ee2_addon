@@ -13,8 +13,8 @@
  * @package    DeploymentHooks
  * @author     Focus Lab, LLC <dev@focuslabllc.com>
  * @copyright  Copyright (c) 2011 Focus Lab, LLC
- * @link       @todo http://github.com/focuslabllc/
- * @license    @todo come up with the license
+ * @link       https://github.com/focuslabllc/deployment_hooks.ee2_addon
+ * @license    MIT  http://opensource.org/licenses/mit-license.php
  */
 
 class Beanstalk_toggle_system_ext {
