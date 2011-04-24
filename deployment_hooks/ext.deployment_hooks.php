@@ -116,7 +116,7 @@ class Deployment_hooks_ext {
 	 * @access     public
 	 * @return     void
 	 */
-	public function settings_forms($current)
+	public function settings_form($current)
 	{
 		// We would load the form helper and table library but they already
 		// seem to be avaiable within our view file so I commented them both out
