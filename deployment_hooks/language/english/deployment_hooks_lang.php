@@ -137,6 +137,10 @@ $lang = array(
 	'dh:full_deployment_log' =>
 	'Full Deployment Log',
 	
+	'dh:mod_not_installed' =>
+	'<strong>It appears you did not install the Deployment Hooks module properly.<br/>Please install it now by going to your Modules page and clicking Install in the appropriate row.</strong>',
+	
+	
 	
 	/**
 	 * Log language lines

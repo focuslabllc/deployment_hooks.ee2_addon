@@ -15,6 +15,8 @@
  * @license    MIT  http://opensource.org/licenses/mit-license.php
  */
 
+require_once(PATH_THIRD . 'deployment_hooks/config/deployment_hooks.php');
+
 class Deployment_hooks_ext {
 	
 	/**
@@ -26,7 +28,7 @@ class Deployment_hooks_ext {
 	/**
 	 * @var string  Extension version number  
 	 */
-	public $version = '1.0';
+	public $version = DH_VERSION;
 	
 	
 	/**
@@ -71,15 +73,20 @@ class Deployment_hooks_ext {
 	public function __construct($settings='')
 	{
 		$this->_EE =& get_instance();
+		// Can't seem to load my model the easy way due to path issues
+		// Using the alternative
+		// $this->_EE->load->model('Deployment_hooks_setup_model');
+		$this->_EE->load->model('../third_party/deployment_hooks/models/Deployment_hooks_setup_model');
 	}
 	// End function __construct()
+	
 	
 	
 	
 	/**
 	 * Basic settings method
 	 * 
-	 * This method is actually not called beacuse we use a
+	 * This method is actually not called because we use a
 	 * custom settings form ({@link settings_form()}) below
 	 * We use the custom settings form to custom validate values
 	 * and send the user to our module CP homepage after submission
@@ -91,10 +98,8 @@ class Deployment_hooks_ext {
 	 */
 	public function settings()
 	{
-		return array(
-			'dh:get_token' => '',
-			'dh:ip_array'  => ''
-		);
+		// Default settings are stored in config/deployment_hooks.php
+		return $this->_EE->config->item('dh:default_settings');
 	}
 	// End function settings()
 	
@@ -111,7 +116,7 @@ class Deployment_hooks_ext {
 	 * @access     public
 	 * @return     void
 	 */
-	public function settings_form($current)
+	public function settings_forms($current)
 	{
 		// We would load the form helper and table library but they already
 		// seem to be avaiable within our view file so I commented them both out
@@ -155,8 +160,9 @@ class Deployment_hooks_ext {
 			$_POST[$key] = $this->_EE->input->post($key,TRUE);
 		}
 		
-		// $len = $this->_EE->input->post('max_link_length');
-		
+		/*
+			TODO  Setup validation 
+		*/
 		if (FALSE)
 		{
 			// error occured.
@@ -170,9 +176,8 @@ class Deployment_hooks_ext {
 			);
 		}
 		
-		// Update db in model file here
-		$this->_EE->db->where('class', __CLASS__);
-		$this->_EE->db->update('extensions', array('settings' => serialize($_POST)));
+		// Update settings in the db
+		$this->_EE->Deployment_hooks_setup_model->update_settings(serialize($_POST));
 		
 		// Success, redirect to module home page with success message
 		$this->_EE->session->set_flashdata(
@@ -191,13 +196,13 @@ class Deployment_hooks_ext {
 	 * Activate Extension
 	 *
 	 * This function enters the extension into the exp_extensions table
+	 * Or does it.....(see below)
 	 *
 	 * @access    public
 	 * @return    void
 	 */
 	public function activate_extension()
 	{
-		$default_settings = $this->settings();
 		
 		/**
 		 * We actually have to install with at least 1 hook otherwise the extension
@@ -207,17 +212,12 @@ class Deployment_hooks_ext {
 		 * @link http://expressionengine.com/forums/viewthread/176691/
 		 */
 		
-		$data = array(
-			'class'     => __CLASS__,
-			'method'    => 'so_long',
-			'hook'      => 'thanks_for_all_the_fish',
-			'settings'  => serialize($default_settings),
-			'priority'  => 10,
-			'version'   => $this->version,
-			'enabled'   => 'y'
-		);
+		/**
+		 * We aren't using this to activate the extension. We can guarantee the installation of
+		 * our extension by doing this in the module UPD file. That way a user can't choose to not
+		 * install the extension which would kill our settings approach. So, nothing to see here.
+		 */
 		
-		$this->_EE->db->insert('extensions', $data);
 	}
 	// End function activate_extension()
 	
@@ -228,14 +228,14 @@ class Deployment_hooks_ext {
 	 * Disable Extension
 	 *
 	 * This method removes information from the exp_extensions table
+	 * Or does it.....(see above)
 	 *
 	 * @access    public
 	 * @return    void
 	 */
 	public function disable_extension()
 	{
-		$this->_EE->db->where('class', __CLASS__);
-		$this->_EE->db->delete('extensions');
+		// Nothing here either. See comments for activate_extension()
 	}
 	// End function disable_extension()
 	

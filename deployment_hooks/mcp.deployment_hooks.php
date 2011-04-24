@@ -61,22 +61,16 @@ class Deployment_hooks_mcp {
 		$this->_EE =& get_instance();
 		
 		// load our model for access in all methods
-		// $this->_EE->load->model('deployment_hooks_model');
+		$this->_EE->load->model('deployment_hooks_model','Deployment_hooks_model');
+		
 		// Get our add-on's settings
-		/*
-			TODO 	move this into our model file
-		*/
-		$settings_query = $this->_EE->db->select('settings')
-												  ->where('enabled', 'y')
-												  ->where('class', 'Deployment_hooks_ext')
-												  ->limit(1)
-												  ->get('extensions');
-												
-		if ($settings_query->num_rows() > 0 && $settings_query->row('settings')  != '')
+		$settings = $this->_EE->Deployment_hooks_model->get_settings();
+		
+		if ($settings->num_rows() > 0 && $settings->row('settings')  != '')
 		{
 			// Load the string helper
 			$this->_EE->load->helper('string');
-			$this->_settings = strip_slashes(unserialize($settings_query->row('settings')));
+			$this->_settings = strip_slashes(unserialize($settings->row('settings')));
 		}
 		
 		
@@ -134,48 +128,40 @@ class Deployment_hooks_mcp {
 		// Quickly verify that we have successfully registered our actions
 		$data['actions_registered'] = ($this->_EE->cp->fetch_action_id('Deployment_hooks_mcp', 'deployment_pre_hook')) ? TRUE : FALSE ;
 		
-		// Build our pre and post action urls
-		// Might include a (simple) security _GET key/value token based on extension settings
-		$data['pre_action_url']  = $this->_EE->config->config['base_url']
-										 . QUERY_MARKER
-										 . 'ACT='
-										 . $this->_EE->cp->fetch_action_id('Deployment_hooks_mcp', 'deployment_pre_hook');
-		$data['pre_action_url']  .= ($this->_settings['dh:get_token'] != '') ? '&'.$this->_settings['dh:get_token'] : '' ;
+		// Setup an array of our hook substrings so we can keep things DRY
+		$hooks = array('pre','post');
 		
-		$data['post_action_url'] = $this->_EE->config->config['base_url']
-										 . QUERY_MARKER
-										 . 'ACT='
-										 . $this->_EE->cp->fetch_action_id('Deployment_hooks_mcp', 'deployment_post_hook');
-		$data['post_action_url']  .= ($this->_settings['dh:get_token'] != '') ? '&'.$this->_settings['dh:get_token'] : '' ;
-		
-		// Used in our view for conditioals on displaying extensions or a 'not in use' message
-		$data['pre_is_used']  = $this->_EE->extensions->active_hook('deployment_hooks_pre_deploy');
-		$data['post_is_used'] = $this->_EE->extensions->active_hook('deployment_hooks_post_deploy');
-		
-		if ($data['pre_is_used'])
+		// We run the same code against each hook so we'll just use a foreach on our array we just created
+		foreach ($hooks as $which)
 		{
-			// our pre-development hook is active so we grab the extensions from the DB.
-			// technically I can use the EE superobject to get this information but the way
-			// I'd be sorting through things is silly. It's easier (and not any more intensive)
-			// to run a query to fetch data in the format I want/need
-			$pre_query = $this->_EE->db->get_where('extensions',array('hook'=>'deployment_hooks_pre_deploy'));
-			$this->_EE->db->group_by('class');
-			foreach ($pre_query->result() as $pre_query) {
-				$pre_query->name = ucwords(str_replace('_', ' ', str_replace('_ext','',$pre_query->class)));
-				$data['pre_extensions'][] = $pre_query;
+			
+			// Build our pre and post action urls
+			$data[$which.'_action_url']  = $this->_EE->config->config['base_url']
+												  . QUERY_MARKER
+												  . 'ACT='
+												  . $this->_EE->cp->fetch_action_id('Deployment_hooks_mcp', 'deployment_'.$which.'_hook');
+			$data[$which.'_action_url']  .= ($this->_settings['dh:get_token'] != '') ? '&'.$this->_settings['dh:get_token'] : '' ;
+			
+			// Used in our view for conditioals on displaying extensions or a 'not in use' message
+			$data[$which.'_is_used']  = $this->_EE->extensions->active_hook('deployment_hooks_'.$which.'_deploy');
+			
+			if ($data[$which.'_is_used'])
+			{
+				// our pre-development hook is active so we grab the extensions from the DB.
+				// technically I can use the EE superobject to get this information but the way
+				// I'd be sorting through things is silly. It's easier (and not any more intensive)
+				// to run a query to fetch data in the format I want/need
+				$query = $this->_EE->Deployment_hooks_model->get_hook_use('deployment_hooks_'.$which.'_deploy');
+				foreach ($query->result() as $query) {
+					$query->name = ucwords(str_replace('_', ' ', str_replace('_ext','',$query->class)));
+					$data[$which.'_extensions'][] = $query;
+				}
 			}
+			// End conditional if ($data[$which.'_is_used'])
+			
 		}
+		// End loop foreach ($hooks as $which)
 		
-		if ($data['post_is_used'])
-		{
-			// our post-development hook is active so we grab the extensions form the DB (more notes above)
-			$post_query = $this->_EE->db->get_where('extensions',array('hook'=>'deployment_hooks_post_deploy'));
-			$this->_EE->db->group_by('class');
-			foreach ($post_query->result() as $post_query) {
-				$post_query->name = ucwords(str_replace('_', ' ', str_replace('_ext','',$post_query->class)));
-				$data['post_extensions'][] = $post_query;
-			}
-		}
 		
 		// Pass our deployment hook extension settings.
 		// Not used in the view file yet - but might need it later
@@ -212,20 +198,17 @@ class Deployment_hooks_mcp {
 		
 		$this->_EE->load->library(array('table','pagination'));
 		$this->_EE->load->helper('html');
-		/*
-			TODO Turn these db transactions into the model file
-		*/
+
 		//  Check for pagination
-		$total = $this->_EE->db->count_all('deployment_hook_posts');
-		$per_page = 5;
-		$this->_EE->db->order_by('deploy_timestamp', 'desc'); 
-		$query = $this->_EE->db->get('deployment_hook_posts', $per_page, $this->_EE->input->get('rownum'));
+		$total = $this->_EE->Deployment_hooks_model->get_deployment_post_count();
+		$per_page = 10;
+		$deployments = $this->_EE->Deployment_hooks_model->get_recent_dh_posts($per_page, $this->_EE->input->get('rownum'));
 		// Pass the relevant data to the paginate class so it can display the "next page" links
 		$p_config = $this->pagination_config('log', $per_page, $total);
 		$this->_EE->pagination->initialize($p_config);
 
 		$data['pagination'] = $this->_EE->pagination->create_links();
-		$data['deployment_posts'] = $query->result();
+		$data['deployment_posts'] = $deployments->result();
 		
 		return $this->_EE->load->view('log', $data, TRUE);
 		
@@ -244,14 +227,10 @@ class Deployment_hooks_mcp {
 	 */
 	public function docs()
 	{
-		
 		$this->_EE->cp->set_variable('cp_page_title', lang('dh:menu_docs'));
 		$this->_EE->cp->set_breadcrumb($this->_url_base, lang('deployment_hooks_module_name'));
-		/*
-			TODO 	create the in-cp documentation
-		*/
-		return $this->_EE->load->view('docs','',TRUE);
 		
+		return $this->_EE->load->view('docs','',TRUE);
 	}
 	// End function docs()
 	
@@ -405,8 +384,17 @@ class Deployment_hooks_mcp {
 		
 		$pass = TRUE;
 		
+		// If our settings are left blank then they still have a value of an empty string
+		// To make this code simpler we'll unset the keys if the value is an empty string
+		foreach ($this->_settings as $key => $value) {
+			if ($value == '')
+			{
+				unset($this->_settings[$key]);
+			}
+		}
+		
 		// Don't go further if our settings are both blank
-		if ($this->_settings['dh:get_token'] == '' AND $this->_settings['dh:ip_array'] == '')
+		if ( ! isset($this->_settings['dh:get_token']) AND ! isset($this->_settings['dh:ip_array']))
 		{
 			return $pass;
 		}
@@ -426,10 +414,6 @@ class Deployment_hooks_mcp {
 			$this->response[] = lang('dh:ip_array_failed') . ' (IP was ' . $this->_EE->input->ip_address() . ')';
 			$pass = FALSE;
 		}
-		
-		/*
-			TODO 	Still need to add in IP limit check based on setting
-		*/
 		
 		return $pass;
 		
@@ -451,16 +435,12 @@ class Deployment_hooks_mcp {
 		
 		if ( ! empty($this->response) )
 		{
-			/*
-				TODO 	move this into model file
-			*/
-			$sql = $this->_EE->db->insert_string('deployment_hook_posts', array(
+			$data = array(
 				'deploy_data'      => serialize($this->_EE->db->escape_str($this->response)),
 				'deploy_timestamp' => $this->_EE->localize->now,
 				'deploy_ip'        => $this->_EE->input->ip_address()
-				));
-			$this->_EE->db->query($sql);
-			
+			);
+			$this->_EE->Deployment_hooks_model->insert_deployment_log_post($data);
 		}
 		
 		$this->response = NULL;

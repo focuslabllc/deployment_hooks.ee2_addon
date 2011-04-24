@@ -15,6 +15,8 @@
  * @license    MIT  http://opensource.org/licenses/mit-license.php
  */
 
+require_once(PATH_THIRD . 'deployment_hooks/config/deployment_hooks.php');
+
 class Deployment_hooks_acc {
 	
 	/**
@@ -32,7 +34,7 @@ class Deployment_hooks_acc {
 	/**
 	 * @var string  Version number of add-on
 	 */
-	public $version = '0.1.0';
+	public $version = DH_VERSION;
 	
 	
 	/**
@@ -66,7 +68,7 @@ class Deployment_hooks_acc {
 	{
 		$this->_EE =& get_instance();
 		// Load our config settings
-		$this->_EE->config->load('deployment_hooks');
+		$this->_EE->config->load('../third_party/deployment_hooks/config/deployment_hooks');
 	}
 	// End function __construct()
 	
@@ -88,13 +90,17 @@ class Deployment_hooks_acc {
 		// We use the HTML helper to easily build the ordered list and heading in the view file
 		$this->_EE->load->helper('html');
 		$this->_EE->lang->loadfile('deployment_hooks');
+		$this->_EE->load->model('Deployment_hooks_model');
 		
-		/*
-			TODO 	move this into the model
-		*/
-		$query = $this->_EE->db->order_by('deploy_timestamp', 'desc')
-									  ->get('exp_deployment_hook_posts', 3);
-		$data['deploy_log'] = $query->result();
+		// If our module hasn't been installed along with the accessory display an error
+		if ( ! $this->_EE->db->table_exists('deployment_hook_posts'))
+		{
+			$this->sections[lang('error')] = lang('dh:mod_not_installed');
+			return;
+		}
+		
+		$recent_deployments = $this->_EE->Deployment_hooks_model->get_recent_dh_posts(3);
+		$data['deploy_log'] = $recent_deployments->result();
 		
 		$this->_EE->cp->add_to_head('
 			<!-- added by Deployment Hooks accessory -->

@@ -5,6 +5,10 @@
  * Deployment Hooks Update file
  *
  * The upd file contains the methods for installing the add-on
+ * We're using a unique approach to this because our Accessory
+ * and Module cannot function without the Extension and vise versa
+ * so we're installing everything within what is typically just the module
+ * installation file.
  * 
  * @package    DeploymentHooks
  * @author     Focus Lab, LLC <dev@focuslabllc.com>
@@ -15,13 +19,10 @@
 
 class Deployment_hooks_upd { 
 	
-	/*
-		TODO 	use config file here
-	*/
 	/**
 	 * @var string  add-on version number
 	 */
-	var $version = '1.0.0'; 
+	var $version = '1.0.0';
 	
 	
 	
@@ -36,6 +37,9 @@ class Deployment_hooks_upd {
 	public function __construct() 
 	{ 
 		$this->_EE =& get_instance();
+		// Load our config settings
+		$this->_EE->config->load('deployment_hooks');
+		$this->_EE->load->model('Deployment_hooks_setup_model');
 	}
 	// End function __construct()
 	
@@ -51,52 +55,10 @@ class Deployment_hooks_upd {
 	 */
 	function install() 
 	{
-		/*
-			TODO 	use config file here
-		*/
-		$data = array(
-			'module_name'        => 'Deployment_hooks',
-			'module_version'     => $this->version,
-			'has_cp_backend'     => 'y',
-			'has_publish_fields' => 'n'
-		);
-		/*
-			TODO 	use model file where db transaction occurs
-		*/
-		$this->_EE->db->insert('modules', $data);
-		
-		$pre_hook = array(
-			'class'   => 'Deployment_hooks_mcp',
-			'method'  => 'deployment_pre_hook'
-		);
-		
-		$post_hook = array(
-			'class'   => 'Deployment_hooks_mcp',
-			'method'  => 'deployment_post_hook'
-		);	
-		
-		$this->_EE->db->insert('actions', $pre_hook);
-		$this->_EE->db->insert('actions', $post_hook);
-		
-		
-		$this->_EE->load->dbforge();
-		
-		$table_fields = array(
-			'deploy_id'        => array('type' => 'INT', 'constraint' => '10', 'unsigned' => TRUE, 'auto_increment' => TRUE),
-			'deploy_ip'        => array('type' => 'VARCHAR', 'constraint' => '15'),
-			'deploy_timestamp' => array('type' => 'VARCHAR', 'constraint' => '20'),
-			'deploy_data'      => array('type' => 'TEXT')
-		);
-		
-		$this->_EE->dbforge->add_field($table_fields);
-		$this->_EE->dbforge->add_key('deploy_id', TRUE);
-		
-		$this->_EE->dbforge->create_table('deployment_hook_posts');
-		
+		$this->_install_module();
+		$this->_install_extension();
+		$this->_install_accessory();
 		return TRUE;
-		/*
-			TODO  Add installation of extension here
-		*/
 	}
 	// End function install()
 	
@@ -112,30 +74,10 @@ class Deployment_hooks_upd {
 	 */
 	function uninstall()
 	{
-		$this->_EE->load->dbforge();
-		
-		$this->_EE->db->select('module_id');
-		/*
-			TODO 	use config here
-		*/
-		$query = $this->_EE->db->get_where('modules', array('module_name' => 'Deployment_hooks'));
-		
-		$this->_EE->db->where('module_id', $query->row('module_id'));
-		$this->_EE->db->delete('module_member_groups');
-		
-		$this->_EE->db->where('module_name', 'Deployment_hooks');
-		$this->_EE->db->delete('modules');
-		
-		$this->_EE->db->where('class', 'Deployment_hooks_mcp');
-		$this->_EE->db->delete('actions');
-		
-		$this->_EE->dbforge->drop_table('deployment_hook_posts');
-				
+		$this->_uninstall_module();
+		$this->_uninstall_extension();
+		$this->_uninstall_accessory();
 		return TRUE;
-		/*
-			TODO  uninstall extension here as well
-		*/
-		
 	}
 	// End function uninstall()
 	
@@ -157,6 +99,120 @@ class Deployment_hooks_upd {
 		return FALSE;
 	}
 	// End function update()
+	
+	
+	
+	
+	/**
+	 * Install module
+	 *
+	 * @access     private
+	 * @author     Erik Reagan <erik@focuslabllc.com>
+	 * @return     void
+	 */
+	private function _install_module()
+	{
+		
+		// Actions for our install transaction
+		$actions = array(
+			array(
+				'class'   => 'Deployment_hooks_mcp',
+				'method'  => 'deployment_pre_hook'
+			),
+			array(
+				'class'   => 'Deployment_hooks_mcp',
+				'method'  => 'deployment_post_hook'
+			)
+		);
+		// Install our module
+		$this->_EE->Deployment_hooks_setup_model->insert_module($this->_EE->config->item('dh:module_data'),$actions);
+		// Build our custom db table
+		// $this->_EE->Deployment_hooks_setup_module->create_dh_table();
+		
+		return TRUE;	
+	}
+	// End function _install_module()
+	
+	
+	
+	
+	/**
+	 * Install extension
+	 *
+	 * @access     private
+	 * @author     Erik Reagan <erik@focuslabllc.com>
+	 * @return     void
+	 */
+	private function _install_extension()
+	{
+		$this->_EE->Deployment_hooks_setup_model->insert_extension($this->_EE->config->item('dh:ext_hook'));
+	}
+	// End function _install_extension()
+	
+	
+	
+	
+	/**
+	 * Install accessory
+	 *
+	 * @access     private
+	 * @author     Erik Reagan <erik@focuslabllc.com>
+	 * @return     void
+	 */
+	private function _install_accessory()
+	{
+		// nothin special here. not yet at least.
+	}
+	// End function _install_accessory()
+	
+	
+	
+	
+	/**
+	 * Uninstall module
+	 *
+	 * @access     private
+	 * @author     Erik Reagan <erik@focuslabllc.com>
+	 * @return     void
+	 */
+	private function _uninstall_module()
+	{
+		$this->_EE->Deployment_hooks_setup_model->delete_module();
+		// $this->_EE->Deployment_hooks_setup_model->drop_dh_table();
+	}
+	// End function _uninstall_module()
+	
+	
+	
+	
+	/**
+	 * Uninstall extension
+	 *
+	 * @access     private
+	 * @author     Erik Reagan <erik@focuslabllc.com>
+	 * @return     void
+	 */
+	private function _uninstall_extension()
+	{
+		$this->_EE->Deployment_hooks_setup_model->delete_extension();
+	}
+	// End function _uninstall_extension()
+	
+	
+	
+	
+	/**
+	 * Install accessory
+	 *
+	 * @access     private
+	 * @author     Erik Reagan <erik@focuslabllc.com>
+	 * @return     void
+	 */
+	private function _uninstall_accessory()
+	{
+		// nothin special here. not yet at least.	
+	}
+	// End function _uninstall_accessory()
 	
 }
 // End class Deployment_hooks_upd
