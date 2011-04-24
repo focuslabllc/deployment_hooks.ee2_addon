@@ -17,12 +17,14 @@
  * @license    MIT  http://opensource.org/licenses/mit-license.php
  */
 
+require_once(PATH_THIRD . 'deployment_hooks/config/deployment_hooks.php');
+
 class Deployment_hooks_upd { 
 	
 	/**
 	 * @var string  add-on version number
 	 */
-	var $version = '1.0.0';
+	var $version = DH_VERSION;
 	
 	
 	
@@ -37,8 +39,6 @@ class Deployment_hooks_upd {
 	public function __construct() 
 	{ 
 		$this->_EE =& get_instance();
-		// Load our config settings
-		$this->_EE->config->load('deployment_hooks');
 		$this->_EE->load->model('Deployment_hooks_setup_model');
 	}
 	// End function __construct()
@@ -127,6 +127,9 @@ class Deployment_hooks_upd {
 		// Install our module
 		$this->_EE->Deployment_hooks_setup_model->insert_module($this->_EE->config->item('dh:module_data'),$actions);
 		// Build our custom db table
+		/**
+		 * @todo uncomment for release
+		 */
 		// $this->_EE->Deployment_hooks_setup_module->create_dh_table();
 		
 		return TRUE;	
@@ -178,6 +181,9 @@ class Deployment_hooks_upd {
 	private function _uninstall_module()
 	{
 		$this->_EE->Deployment_hooks_setup_model->delete_module();
+		/**
+		 * @todo uncomment for release
+		 */
 		// $this->_EE->Deployment_hooks_setup_model->drop_dh_table();
 	}
 	// End function _uninstall_module()
