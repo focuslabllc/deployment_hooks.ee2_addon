@@ -53,7 +53,7 @@ class Deployment_hooks_upd {
 	 * @author     Erik Reagan <erik@focuslabllc.com>
 	 * @return     bool
 	 */
-	function install() 
+	public function install() 
 	{
 		$this->_install_module();
 		$this->_install_extension();
@@ -72,7 +72,7 @@ class Deployment_hooks_upd {
 	 * @author     Erik Reagan <erik@focuslabllc.com>
 	 * @return     bool
 	 */
-	function uninstall()
+	public function uninstall()
 	{
 		$this->_uninstall_module();
 		$this->_uninstall_extension();
@@ -94,7 +94,7 @@ class Deployment_hooks_upd {
 	 * @author     Erik Reagan <erik@focuslabllc.com>
 	 * @return     bool
 	 */
-	function update($current = '')
+	public function update($current = '')
 	{
 		return FALSE;
 	}
