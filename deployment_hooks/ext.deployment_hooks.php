@@ -160,12 +160,17 @@ class Deployment_hooks_ext {
 			$_POST[$key] = $this->_EE->input->post($key,TRUE);
 		}
 		
-		/*
-			TODO  Setup validation 
-		*/
+		/**
+		 * I'd love to have some form validation here but I can't seem to use
+		 * the CI validation library callback functions within the context
+		 * of extension settings. Skipping this for now.
+		 * 
+		 * @link http://expressionengine.com/forums/viewthread/187258/
+		 */
+		
 		if (FALSE)
 		{
-			// error occured.
+			// error occurred.
 			// display message and redirect to settings page.
 			$this->_EE->session->set_flashdata(
 					'message_failure', 
@@ -188,6 +193,38 @@ class Deployment_hooks_ext {
 		
 	}
 	// End function save_settings()
+	
+	
+	
+	
+	/**
+	 * Validate GET settings data
+	 * 
+	 * @param     string   Form submission value
+	 * @access    public
+	 * @author    Erik Reagan <erik@focuslabllc.com>
+	 * @return    bool
+	 */
+	public function _validate_get($str)
+	{
+		// exit(__METHOD__);
+	}
+	// End function validate_get()
+	
+	
+	/**
+	 * Validate GET settings data
+	 * 
+	 * @param     string   Form submission value
+	 * @access    public
+	 * @author    Erik Reagan <erik@focuslabllc.com>
+	 * @return    bool
+	 */
+	public function _validate_ips($str)
+	{
+		// exit(__METHOD__);
+	}
+	// End function validate_get()
 	
 	
 	

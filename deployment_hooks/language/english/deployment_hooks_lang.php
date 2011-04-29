@@ -21,12 +21,18 @@ $lang = array(
 	'dh:get_token' =>
 	'Set your GET token for requests',
 	
+	'dh:get_token_short' =>
+	'GET Token',
+	
 	'dh:get_token_extra' =>
 	'This must be in your deployment hook URL for the actions to be triggered. 
 	<em>example: <u>answer2life=42</u></em>',
 	
 	'dh:ip_array' =>
 	'Limit your deployment hooks to specific IPs for security',
+	
+	'dh:ip_array_short' =>
+	'IP',
 	
 	'dh:ip_array_extra' =>
 	'Leave blank for no restrictions or use a pipe delimited list to restrict.
