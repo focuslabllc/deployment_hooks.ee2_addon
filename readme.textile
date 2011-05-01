@@ -4,7 +4,7 @@ h1. Deployment Hooks
 
 This is achieved by creating two action URLs in EE (yoursite.com/?ACT=xx) and running security checks before executing any sensitive code. These URLs call two hooks in the add-on which trigger any extensions you will have installed for this add-on. *I imagine most users will write their own extension(s) within the context of their own add-on.*
 
-!http://files.droplr.com/files/8009172/3GtX.Screen%20shot%202011-05-01%20at%2012%3A42%3A42.png?AWSAccessKeyId=AKIAJSVQN3Z4K7MT5U2A&Expires=1304268261&Signature=1f8Pf5ZHrxKvOhWMAqGusIbi8fY%3D!
+!http://files.focuslabllc.com.s3.amazonaws.com/screens/dh/screen-1.jpg!
 
 
 h2. Compatibility
@@ -53,7 +53,7 @@ Setting up Deployment Hooks is as simple as copying and pasting the pre and post
 # Add or Edit a server environment
 # Paste your Deployment Hooks URLs into the related fields
 
-!http://help.beanstalkapp.com/assets/27e29736a6249117fd2af13518418418b1831216/hooks_normal.png!
+!http://files.focuslabllc.com.s3.amazonaws.com/screens/dh/screen-2.png!
 
 After setting up your hook URLs, ensure that your custom extension(s) are installed and ready to roll.
 
