@@ -40,6 +40,7 @@ class Deployment_hooks_upd {
 	{ 
 		$this->_EE =& get_instance();
 		$this->_EE->load->model('Deployment_hooks_setup_model');
+		$this->_EE->load->config('../third_party/deployment_hooks/config/deployment_hooks.php');
 	}
 	// End function __construct()
 	
@@ -124,10 +125,11 @@ class Deployment_hooks_upd {
 				'method'  => 'deployment_post_hook'
 			)
 		);
+		
 		// Install our module
 		$this->_EE->Deployment_hooks_setup_model->insert_module($this->_EE->config->item('dh:module_data'),$actions);
 		// Build our custom db table
-		$this->_EE->Deployment_hooks_setup_module->create_dh_table();
+		$this->_EE->Deployment_hooks_setup_model->create_dh_table();
 		
 		return TRUE;	
 	}

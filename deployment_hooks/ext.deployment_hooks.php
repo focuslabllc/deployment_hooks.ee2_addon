@@ -73,10 +73,12 @@ class Deployment_hooks_ext {
 	public function __construct($settings='')
 	{
 		$this->_EE =& get_instance();
-		// Can't seem to load my model the easy way due to path issues
+		// Can't seem to load my model or config files the easy way due to path issues
 		// Using the alternative
 		// $this->_EE->load->model('Deployment_hooks_setup_model');
+		// $this->_EE->load->config('deployment_hooks');
 		$this->_EE->load->model('../third_party/deployment_hooks/models/Deployment_hooks_setup_model');
+		$this->_EE->load->config('../third_party/deployment_hooks/config/deployment_hooks');
 	}
 	// End function __construct()
 	

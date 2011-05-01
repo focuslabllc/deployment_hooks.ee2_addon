@@ -70,5 +70,11 @@ $config['dh:module_data'] = array(
 );
 
 
+/**
+ * @var     bool  For local dev/testing
+ */
+$config['dh:dev_mode'] = TRUE;
+
+
 /* End of file deployment_hooks.php */
 /* Location: ./system/expressionengine/third_party/deployment_hooks/config/deployment_hooks.php */

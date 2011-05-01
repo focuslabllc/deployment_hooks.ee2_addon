@@ -181,14 +181,14 @@ class Deployment_hooks_setup_model {
 		$this->_EE->db->select('module_id');
 		$query = $this->_EE->db->get_where('modules', array('module_name' => 'Deployment_hooks'));
 		
-		$this->_EE->db->where('module_id', $query->row('module_id'));
-		$this->_EE->db->delete('module_member_groups');
+		$this->_EE->db->where('module_id', $query->row('module_id'))
+						  ->delete('module_member_groups');
 		
-		$this->_EE->db->where('module_name', 'Deployment_hooks');
-		$this->_EE->db->delete('modules');
+		$this->_EE->db->where('module_name', 'Deployment_hooks')
+						  ->delete('modules');
 		
-		$this->_EE->db->where('class', 'Deployment_hooks_mcp');
-		$this->_EE->db->delete('actions');
+		$this->_EE->db->where('class', 'Deployment_hooks_mcp')
+						  ->delete('actions');
 	}
 	// End function delete_module()
 	

@@ -59,7 +59,7 @@ class Deployment_hooks_mcp {
 	{
 		
 		$this->_EE =& get_instance();
-		$this->_debug = ($this->_EE->session->userdata['group_id'] == '1' OR DEBUG == 1) ? TRUE : FALSE ;
+		$this->_debug = ($this->_EE->session->userdata['group_id'] == '1' OR $this->_EE->config->item('dh:dev_mode')) ? TRUE : FALSE ;
 		
 		// load our model for access in all methods
 		$this->_EE->load->model('deployment_hooks_model','Deployment_hooks_model');
@@ -69,7 +69,7 @@ class Deployment_hooks_mcp {
 		
 		if ($settings->num_rows() > 0 && $settings->row('settings')  != '')
 		{
-			// Load the string helper
+			// Load the string helper to strip slashes on array items
 			$this->_EE->load->helper('string');
 			$this->_settings = strip_slashes(unserialize($settings->row('settings')));
 		}
