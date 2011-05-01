@@ -1,1 +1,108 @@
-todo
+h1. Deployment Hooks
+
++This add-on does virtually nothing on its own.+ The point is to put a few tools in place with which a developer can more easily utilize software web hooks to automatically execute actions before and after site deployments.
+
+This is achieved by creating two action URLs in EE (yoursite.com/?ACT=xx) and running security checks before executing any sensitive code. These URLs call two hooks in the add-on which trigger any extensions you will have installed for this add-on. *I imagine most users will write their own extension(s) within the context of their own add-on.*
+
+!http://files.droplr.com/files/8009172/3GtX.Screen%20shot%202011-05-01%20at%2012%3A42%3A42.png?AWSAccessKeyId=AKIAJSVQN3Z4K7MT5U2A&Expires=1304268261&Signature=1f8Pf5ZHrxKvOhWMAqGusIbi8fY%3D!
+
+
+h2. Compatibility
+
+Deployment Hooks requires ExpressionEngine 2.1.3 or greater
+
+
+h2. Installation
+
+* Move the @deployment_hooks@ folder into your @expressionengine/third_party@ folder
+* Go to Modules &rarr; Deployment Hooks &rarr; Install
+
+
+h2. Features
+
+* Adds 2 unique URLs to your site for Pre and Post deployment actions
+* Hooks are secured by GET key/value tokens and/or IP-based restriction
+* Each deployment hook use is logged in the database (upon success OR failure)
+* Easily see what extensions use the Deployment Hooks module
+* Easily check the recent log notes via an Accessory (if desired)
+
+
+h2. Settings
+
+In an effort to keep the average user from simply browsing to your Deployment Hooks URL, you can optionally configure two security-based settings for the add-on.
+
+h3. GET token required
+
+Enter a key/value pair in the forms of a URL Get variable to prevent your URLs from being accessed without the token. A sample would be something like @answer2life=42@ which would turn your Deployment Hook URL into something like @http://yoursite.com/?ACT=35&answer2life=42@. 
+
+If you use this setting and the key/value is missing from the URL then the code does not get executed any further.
+
+h3. IP-based restriction
+
+You can optionally enter a pipe-delimited list of IPs to create a "whitelist" of sorts for the add-on. If you enter *any* IPs in this list you thereby block any IPs not in the list.
+
+This would be used to limit the Deployment Hooks execution to your deployment server IP (or range of IPs). An example would be including the IPs from Beanstalk in their documentation here: http://help.beanstalkapp.com/kb/security-backups/ports-and-ip-addresses
+
+
+h2. Using the Add-on
+
+Setting up Deployment Hooks is as simple as copying and pasting the pre and post deployment hook URLs into the right place. We use Beanstalk to deploy our sites so you can see an example of where you'd use the URLs in the following way:
+
+# Select a repository
+# Go to the Deployments tab
+# Add or Edit a server environment
+# Paste your Deployment Hooks URLs into the related fields
+
+!http://help.beanstalkapp.com/assets/27e29736a6249117fd2af13518418418b1831216/hooks_normal.png!
+
+After setting up your hook URLs, ensure that your custom extension(s) are installed and ready to roll.
+
+
+h2. Building an Extension for Deployment Hooks
+
+A sample extension is included in the download of Deployment Hooks. In this extension you can see how it utilizes each hook (both pre and post) to turn the EE system off before the deployment begins, then back on when the deployment is completed. 
+
+The extension is built to use Beanstalk specifically so we know what data format to expect as an input. Because of this we can use some extra security to check and make sure the request is originating from the right place. Review this extension to get an idea of how you can utilize these hooks.
+
+It's certainly possible (and tested) to use multiple extensions with this add-on.
+
+The most important part of using this add-on is ensuring that you utilize the Deployment Hooks log. To do this you simply return an @array@ at the end of your method. The @array@ should simply contain strings for each action.
+
+As a reference point it may also be good to include your extension's name in the log item. This way if Deployment Hooks is using multiple extensions it will be clear which one logged which action. Here is a sample from the log:
+
+# Post-Deployment Hook initiated
+# Security check passed. Continuing.
+# Beanstalk Toggle System: Successfully turned on the system after rev @agd76d89@
+# Post-Deployment Hook completed
+
+Here is how the hooks appear in the code:
+
+<pre><code>&lt;?php
+
+if ($this-&gt;_EE-&gt;extensions-&gt;active_hook(&#x27;deployment_hooks_&#x27;.$which.&#x27;_deploy&#x27;) === TRUE)
+{
+    $ext_response = $this-&gt;_EE-&gt;extensions-&gt;call(&#x27;deployment_hooks_&#x27;.$which.&#x27;_deploy&#x27;);
+    $this-&gt;response = is_array($ext_response) ? array_merge($this-&gt;response,$ext_response) : $this-&gt;response ;
+}
+
+?&gt;
+</code></pre>
+
+If you have any questions about implementation send an email to dev@focuslabllc.com.
+
+
+h2. Contributions
+
+This add-on was a byproduct of our team trying to make our deployment process more efficient and DRY. We would love to have community input and code contribution. Feel free to fork the repository and send pull requests.
+
+
+h2. Support
+
+Support for Deployment Hooks will be very limited due to its cost to you (nothing!). We ask that you file any issues in the GitHub repository under "the Issues tab":https://github.com/focuslabllc/deployment_hooks.ee2_addon/issues.
+
+
+h2. Change Log
+
++*The Future: 1.0.0*+
+
+* Initial Release
