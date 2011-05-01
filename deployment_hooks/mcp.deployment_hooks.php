@@ -138,9 +138,9 @@ class Deployment_hooks_mcp {
 			
 			// Build our pre and post action urls
 			$data[$which.'_action_url']  = $this->_EE->config->config['base_url']
-												  . QUERY_MARKER
-												  . 'ACT='
-												  . $this->_EE->cp->fetch_action_id('Deployment_hooks_mcp', 'deployment_'.$which.'_hook');
+			                             . QUERY_MARKER
+			                             . 'ACT='
+			                             . $this->_EE->cp->fetch_action_id('Deployment_hooks_mcp', 'deployment_'.$which.'_hook');
 			$data[$which.'_action_url']  .= ($this->_settings['dh:get_token'] != '') ? '&'.$this->_settings['dh:get_token'] : '' ;
 			
 			// Used in our view for conditioals on displaying extensions or a 'not in use' message
@@ -260,17 +260,17 @@ class Deployment_hooks_mcp {
 			$config['full_tag_open'] = '<p id="paginationLinks">';
 			$config['full_tag_close'] = '</p>';
 			$config['prev_link'] = '<img src="'
-										. $this->_EE->cp->cp_theme_url
-										. 'images/pagination_prev_button.gif" width="13" height="13" alt="<" />';
+			                     . $this->_EE->cp->cp_theme_url
+			                     . 'images/pagination_prev_button.gif" width="13" height="13" alt="<" />';
 			$config['next_link'] = '<img src="'
-										. $this->_EE->cp->cp_theme_url
-										. 'images/pagination_next_button.gif" width="13" height="13" alt=">" />';
+			                     . $this->_EE->cp->cp_theme_url
+			                     . 'images/pagination_next_button.gif" width="13" height="13" alt=">" />';
 			$config['first_link'] = '<img src="'
-										 . $this->_EE->cp->cp_theme_url
-										 . 'images/pagination_first_button.gif" width="13" height="13" alt="<<" />';
+			                      . $this->_EE->cp->cp_theme_url
+			                      . 'images/pagination_first_button.gif" width="13" height="13" alt="<<" />';
 			$config['last_link'] = '<img src="'
-										 . $this->_EE->cp->cp_theme_url
-										 . 'images/pagination_last_button.gif" width="13" height="13" alt=">>" />';
+			                      . $this->_EE->cp->cp_theme_url
+			                      . 'images/pagination_last_button.gif" width="13" height="13" alt=">>" />';
 			
 			return $config;
 	}

@@ -175,8 +175,8 @@ class Deployment_hooks_ext {
 			// error occurred.
 			// display message and redirect to settings page.
 			$this->_EE->session->set_flashdata(
-					'message_failure', 
-					'message'
+				'message_failure', 
+				'message'
 			);
 			$this->_EE->functions->redirect(
 				BASE.AMP.'C=addons_extensions'.AMP.'M=extension_settings'.AMP.'file=deployment_hooks'
@@ -189,7 +189,7 @@ class Deployment_hooks_ext {
 		// Success, redirect to module home page with success message
 		$this->_EE->session->set_flashdata(
 			'message_success',
-		 	$this->_EE->lang->line('dh:settings_saved')
+			$this->_EE->lang->line('dh:settings_saved')
 		);
 		$this->_EE->functions->redirect($this->_EE->config->item('dh:mod_url_base'));
 		

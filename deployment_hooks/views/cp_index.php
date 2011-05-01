@@ -114,13 +114,13 @@ echo $this->table->generate();
 echo br();
 
 echo "<p><a href=\""
-		. BASE
-		. AMP
-		. "C=addons_extensions\">"
-		. lang('dh:view_your_extensions')
-		. "</a>"
-		. lang('dh:to_make_changes')
-		. "</p>";
-		
+      . BASE
+      . AMP
+      . "C=addons_extensions\">"
+      . lang('dh:view_your_extensions')
+      . "</a>"
+      . lang('dh:to_make_changes')
+      . "</p>";
+
 /* End of file cp_index.php */
 /* Location: ./system/expressionengine/third_party/deployment_hooks/views/cp_index.php */

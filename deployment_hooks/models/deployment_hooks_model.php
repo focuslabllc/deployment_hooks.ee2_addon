@@ -53,7 +53,7 @@ class Deployment_hooks_model {
 	public function get_recent_dh_posts($limit = 10, $offset = 0)
 	{
 		return $this->_EE->db->order_by('deploy_timestamp', 'desc')
-									->get('exp_deployment_hook_posts', $limit, $offset);
+		                     ->get('exp_deployment_hook_posts', $limit, $offset);
 	}
 	// End function get_recent_dh_posts()
 	
@@ -73,10 +73,10 @@ class Deployment_hooks_model {
 	public function get_settings()
 	{
 		return $this->_EE->db->select('settings')
-									->where('enabled', 'y')
-									->where('class', 'Deployment_hooks_ext')
-									->limit(1)
-									->get('extensions');
+		                     ->where('enabled', 'y')
+		                     ->where('class', 'Deployment_hooks_ext')
+		                     ->limit(1)
+		                     ->get('extensions');
 	}
 	// End function get_settings()
 	
@@ -97,7 +97,7 @@ class Deployment_hooks_model {
 	public function get_hook_use($hook = NULL)
 	{
 		return $this->_EE->db->group_by('class')
-									->get_where('extensions',array('hook' => $hook));
+		                     ->get_where('extensions',array('hook' => $hook));
 	}
 	// End function get_hook_use()
 	

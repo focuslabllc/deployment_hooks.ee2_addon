@@ -53,7 +53,7 @@ class Deployment_hooks_setup_model {
 	public function update_settings($settings = NULL)
 	{
 		$this->_EE->db->where('class', 'deployment_hooks_ext')
-						  ->update('extensions', array('settings' => $settings));	
+		              ->update('extensions', array('settings' => $settings));	
 	}
 	// End function update_settings()
 	
@@ -98,7 +98,7 @@ class Deployment_hooks_setup_model {
 	public function delete_extension()
 	{
 		$this->_EE->db->where('class', 'Deployment_hooks_ext')
-						  ->delete('extensions');
+		              ->delete('extensions');
 	}
 	// End function delete_extension()
 	
@@ -182,13 +182,13 @@ class Deployment_hooks_setup_model {
 		$query = $this->_EE->db->get_where('modules', array('module_name' => 'Deployment_hooks'));
 		
 		$this->_EE->db->where('module_id', $query->row('module_id'))
-						  ->delete('module_member_groups');
+		              ->delete('module_member_groups');
 		
 		$this->_EE->db->where('module_name', 'Deployment_hooks')
-						  ->delete('modules');
+		              ->delete('modules');
 		
 		$this->_EE->db->where('class', 'Deployment_hooks_mcp')
-						  ->delete('actions');
+		              ->delete('actions');
 	}
 	// End function delete_module()
 	
