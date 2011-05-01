@@ -17,6 +17,10 @@ h2. Installation
 * Move the @deployment_hooks@ folder into your @expressionengine/third_party@ folder
 * Go to Modules &rarr; Deployment Hooks &rarr; Install
 
+Optionally install the Beanstalk Toggle System add-on included in the package for a sample use of Deployment Hooks
+
+* Move the @beanstalk_toggle_system_@ folder into your @expressionengine/third_party@ folder
+* Go to Admin &rarr; Utilities &rarr; Extensions and install Beanstalk Toggle System
 
 h2. Features
 
