@@ -67,8 +67,6 @@ class Deployment_hooks_acc {
 	public function __construct()
 	{
 		$this->_EE =& get_instance();
-		// Load our config settings
-		$this->_EE->config->load('../third_party/deployment_hooks/config/deployment_hooks');
 	}
 	// End function __construct()
 	

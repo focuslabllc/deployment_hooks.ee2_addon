@@ -59,6 +59,7 @@ class Deployment_hooks_mcp {
 	{
 		
 		$this->_EE =& get_instance();
+		$this->_debug = ($this->_EE->session->userdata['group_id'] == '1' OR DEBUG == 1) ? TRUE : FALSE ;
 		
 		// load our model for access in all methods
 		$this->_EE->load->model('deployment_hooks_model','Deployment_hooks_model');
@@ -331,14 +332,12 @@ class Deployment_hooks_mcp {
 			// We failed the security check so let's log that and return
 			$this->response[] = lang('dh:security_failed');
 			$this->_log_deployment();
-			/**
-			 * @todo change this behavior
-			 * 
-			 * Should this display an error message?
-			 * Redirect to site homepage?
-			 * Allow an option for either of the above based on add-on settings?
-			 */
-			return $this->_EE->output->fatal_error('Yea....I don\'t think you\'re supposed to be here.');
+			if ($this->_debug)
+			{
+				exit('Security check failed. Check Deployment Hooks log for more info.');
+			} else {
+				exit;
+			}
 		} else {
 			$this->response[] = lang('dh:security_passed');
 		}
@@ -362,11 +361,12 @@ class Deployment_hooks_mcp {
 		// Example - take the response array and send it to Basecamp via their API as a
 		// private message to a specified project.
 		
-		/*
-			TODO change this behavior - this is only for debugging right now
-			What should happen at this point?
-		*/
-		exit('done - success - '.$which);
+		if ($this->_debug)
+		{
+			exit(ucwords($which).'-deployment hook complete.');
+		} else {
+			exit;
+		}
 	}
 	// End function _deployment_hook_master()
 

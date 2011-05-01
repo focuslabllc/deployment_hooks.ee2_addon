@@ -143,6 +143,11 @@ class Deployment_hooks_setup_model {
 	 */
 	public function create_dh_table()
 	{
+		if ($this->_EE->db->table_exists('deployment_hook_posts'))
+		{
+			return;
+		}
+		
 		$table_fields = array(
 			'deploy_id'        => array('type' => 'INT', 'constraint' => '10', 'unsigned' => TRUE, 'auto_increment' => TRUE),
 			'deploy_ip'        => array('type' => 'VARCHAR', 'constraint' => '15'),
@@ -201,7 +206,10 @@ class Deployment_hooks_setup_model {
 	 */
 	public function drop_dh_table()
 	{
-		$this->_EE->dbforge->drop_table('deployment_hook_posts');
+		if ($this->_EE->db->table_exists('deployment_hook_posts'))
+		{
+			$this->_EE->dbforge->drop_table('deployment_hook_posts');
+		}
 	}
 	// End function drop_dh_table()
 	

@@ -127,10 +127,7 @@ class Deployment_hooks_upd {
 		// Install our module
 		$this->_EE->Deployment_hooks_setup_model->insert_module($this->_EE->config->item('dh:module_data'),$actions);
 		// Build our custom db table
-		/**
-		 * @todo uncomment for release
-		 */
-		// $this->_EE->Deployment_hooks_setup_module->create_dh_table();
+		$this->_EE->Deployment_hooks_setup_module->create_dh_table();
 		
 		return TRUE;	
 	}
