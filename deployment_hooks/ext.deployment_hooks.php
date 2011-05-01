@@ -170,18 +170,18 @@ class Deployment_hooks_ext {
 		 * @link http://expressionengine.com/forums/viewthread/187258/
 		 */
 		
-		if (FALSE)
-		{
-			// error occurred.
-			// display message and redirect to settings page.
-			$this->_EE->session->set_flashdata(
-				'message_failure', 
-				'message'
-			);
-			$this->_EE->functions->redirect(
-				BASE.AMP.'C=addons_extensions'.AMP.'M=extension_settings'.AMP.'file=deployment_hooks'
-			);
-		}
+		// if (FALSE)
+		// {
+		// 	// error occurred.
+		// 	// display message and redirect to settings page.
+		// 	$this->_EE->session->set_flashdata(
+		// 		'message_failure', 
+		// 		'message'
+		// 	);
+		// 	$this->_EE->functions->redirect(
+		// 		BASE.AMP.'C=addons_extensions'.AMP.'M=extension_settings'.AMP.'file=deployment_hooks'
+		// 	);
+		// }
 		
 		// Update settings in the db
 		$this->_EE->Deployment_hooks_setup_model->update_settings(serialize($_POST));

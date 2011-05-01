@@ -180,10 +180,10 @@ class Deployment_hooks_upd {
 	private function _uninstall_module()
 	{
 		$this->_EE->Deployment_hooks_setup_model->delete_module();
-		/**
-		 * @todo uncomment for release
-		 */
-		// $this->_EE->Deployment_hooks_setup_model->drop_dh_table();
+		if ( ! $this->_EE->config->item('dh:dev_mode'))
+		{
+			$this->_EE->Deployment_hooks_setup_model->drop_dh_table();
+		}
 	}
 	// End function _uninstall_module()
 	

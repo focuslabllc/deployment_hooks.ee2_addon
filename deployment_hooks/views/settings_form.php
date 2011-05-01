@@ -31,5 +31,4 @@
 </table>
 
 <?=form_submit('submit',lang('dh:save_settings'),'class="submit"')?>
-
 <?=form_close()?>

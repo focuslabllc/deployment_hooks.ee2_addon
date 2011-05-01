@@ -106,6 +106,6 @@ Support for Deployment Hooks will be very limited due to its cost to you (nothin
 
 h2. Change Log
 
-+*The Future: 1.0.0*+
++*May 3rd, 2011: 1.0.0*+
 
 * Initial Release

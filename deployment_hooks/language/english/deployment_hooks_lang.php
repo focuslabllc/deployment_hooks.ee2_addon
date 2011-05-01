@@ -1,6 +1,16 @@
 <?php
 
-$lang = array(	
+/**
+ * Deployment Hooks English Lang file
+ *
+ * @package    DeploymentHooks
+ * @author     Focus Lab, LLC <dev@focuslabllc.com>
+ * @copyright  Copyright (c) 2011 Focus Lab, LLC
+ * @link       https://github.com/focuslabllc/deployment_hooks.ee2_addon
+ * @license    MIT  http://opensource.org/licenses/mit-license.php
+ */
+
+$lang = array(
 	
 	/**
 	 * Required language lines
@@ -171,6 +181,7 @@ $lang = array(
 	'No active extensions using the post-deployment hook.'
 	
 	
-	
-)
-?>
+);
+
+/* End of file deployment_hooks_lang.php */
+/* Location: ./system/expressionengine/third_party/deployment_hooks/language/english/deployment_hooks_lang.php */

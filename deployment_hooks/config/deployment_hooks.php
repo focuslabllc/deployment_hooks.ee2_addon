@@ -1,6 +1,21 @@
 <?php
 
 /**
+ * Deployment Hooks Configuration
+ *
+ * We store many settings in the config file. All are
+ * prefixed for clarity throughout the system and config dumps
+ * when other devs are debugging.
+ * 
+ * @package    DeploymentHooks
+ * @author     Focus Lab, LLC <dev@focuslabllc.com>
+ * @copyright  Copyright (c) 2011 Focus Lab, LLC
+ * @link       https://github.com/focuslabllc/deployment_hooks.ee2_addon
+ * @license    MIT  http://opensource.org/licenses/mit-license.php
+ */
+
+
+/**
  * @var    string   Version number
  * 
  * Also define the version constant to be
@@ -73,7 +88,7 @@ $config['dh:module_data'] = array(
 /**
  * @var     bool  For local dev/testing
  */
-$config['dh:dev_mode'] = TRUE;
+$config['dh:dev_mode'] = FALSE;
 
 
 /* End of file deployment_hooks.php */
