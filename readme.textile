@@ -91,7 +91,7 @@ if ($this->_EE->extensions->active_hook('deployment_hooks_'.$which.'_deploy') ==
 
 ?></code></pre>
 
-If you have any questions about implementation send an email to dev@focuslabllc.com.
+If you have any questions about implementation send an email to "dev@focuslabllc.com":mailto:dev@focuslabllc.com.
 
 
 h2. Contributions
