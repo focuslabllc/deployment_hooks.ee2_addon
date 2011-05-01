@@ -75,18 +75,17 @@ As a reference point it may also be good to include your extension's name in the
 # Beanstalk Toggle System: Successfully turned on the system after rev @agd76d89@
 # Post-Deployment Hook completed
 
-Here is how the hooks appear in the code:
+Here is how the hooks appear in the code ("gist":https://gist.github.com/937347):
 
-<pre><code>&lt;?php
+<pre><code><?php
 
-if ($this-&gt;_EE-&gt;extensions-&gt;active_hook(&#x27;deployment_hooks_&#x27;.$which.&#x27;_deploy&#x27;) === TRUE)
+if ($this->_EE->extensions->active_hook('deployment_hooks_'.$which.'_deploy') === TRUE)
 {
-    $ext_response = $this-&gt;_EE-&gt;extensions-&gt;call(&#x27;deployment_hooks_&#x27;.$which.&#x27;_deploy&#x27;);
-    $this-&gt;response = is_array($ext_response) ? array_merge($this-&gt;response,$ext_response) : $this-&gt;response ;
+    $ext_response = $this->_EE->extensions->call('deployment_hooks_'.$which.'_deploy');
+    $this->response = is_array($ext_response) ? array_merge($this->response,$ext_response) : $this->response ;
 }
 
-?&gt;
-</code></pre>
+?></code></pre>
 
 If you have any questions about implementation send an email to dev@focuslabllc.com.
 
