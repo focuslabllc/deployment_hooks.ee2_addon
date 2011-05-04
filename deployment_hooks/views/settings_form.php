@@ -27,6 +27,34 @@
 			</td>
 			<td><?=form_input('dh:ip_array',$settings['dh:ip_array'])?></td>
 		</tr>
+		<tr class="even">
+			<td>
+				<label for="dh:http_auth">
+					<strong><?=lang('dh:http_auth')?></strong>
+					<br/>
+					<small class="notice"><?=lang('dh:http_auth_extra')?></small>
+				</label>
+			</td>
+			<td>
+				<?=form_label(form_checkbox('dh:http_auth', '1', $settings['dh:http_auth']).NBS.lang('yes'))?>
+			</td>
+		</tr>
+		<tr class="odd">
+			<td>
+				<label for="dh:http_auth_member_groups">
+					<strong><?=lang('dh:http_auth_member_groups')?></strong>
+					<br/>
+					<small class="notice"><?=lang('dh:http_auth_member_groups_extra')?></small>
+				</label>
+			</td>
+			<td>
+				<fieldset id="http_auth_member_groups">
+					<?php foreach ($member_groups as $value => $label) : ?>
+					<?=form_label(form_checkbox('dh:http_auth_member_groups[]', $value, in_array($value, $settings['dh:http_auth_member_groups'])).NBS.$label, '', array('style' => 'display:block;'))?>
+					<?php endforeach; ?>
+				</fieldset>
+			</td>
+		</tr>
 	</tbody>
 </table>
 

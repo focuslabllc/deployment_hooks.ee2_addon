@@ -7,7 +7,7 @@
  * This extension is solely for storing settings for Deployment Hooks
  * We install with a fake hook because extensions can't install without
  * a hook apparently. Lovely.
- * 
+ *
  * @package    DeploymentHooks
  * @author     Focus Lab, LLC <dev@focuslabllc.com>
  * @copyright  Copyright (c) 2011 Focus Lab, LLC
@@ -18,50 +18,50 @@
 require_once(PATH_THIRD . 'deployment_hooks/config/deployment_hooks.php');
 
 class Deployment_hooks_ext {
-	
+
 	/**
 	 * @var string  Extension name
 	 */
 	public $name = 'Deployment Hooks Settings';
-	
-	
+
+
 	/**
-	 * @var string  Extension version number  
+	 * @var string  Extension version number
 	 */
 	public $version = DH_VERSION;
-	
-	
+
+
 	/**
 	 * @var string  Extension description
 	 */
 	public $description = 'Settings for Deployment Hooks module';
-	
-	
+
+
 	/**
 	 * @var string  Do Extensions exist? (y|n)
 	 */
 	public $settings_exist = 'y';
-	
-	
+
+
 	/**
 	 * @var string  Extensions documentation URL
 	 */
 	public $docs_url = 'http://focuslabllc.com/';
-	
-	
+
+
 	/**
 	 * @var array  Extension settings array
 	 */
 	public $settings = array();
-	
+
 	/**
 	 * @var object  The EE super object to be referenced in our {@link __construct()}
 	 */
 	private $_EE;
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Constructor
 	 *
@@ -81,13 +81,13 @@ class Deployment_hooks_ext {
 		$this->_EE->load->config('../third_party/deployment_hooks/config/deployment_hooks');
 	}
 	// End function __construct()
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Basic settings method
-	 * 
+	 *
 	 * This method is actually not called because we use a
 	 * custom settings form ({@link settings_form()}) below
 	 * We use the custom settings form to custom validate values
@@ -104,13 +104,13 @@ class Deployment_hooks_ext {
 		return $this->_EE->config->item('dh:default_settings');
 	}
 	// End function settings()
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Custom settings form
-	 * 
+	 *
 	 * There's a nice description of why we use this
 	 * in the {@link settings()} code block
 	 *
@@ -124,23 +124,40 @@ class Deployment_hooks_ext {
 		// seem to be avaiable within our view file so I commented them both out
 		// $this->_EE->load->helper('form');
 		// $this->_EE->load->library('table');
-		
+
 		$this->_EE->cp->set_variable('cp_page_title', lang('deployment_hooks_module_name') . ' ' . lang('settings'));
-		
+
 		// Setup our module's navigation elements
 		// Menu is defined in our config file
 		$this->_EE->cp->set_right_nav($this->_EE->config->item('dh:mod_menu'));
-		
-		$data['settings'] = $current;
-		
+
+		//make sure all the default settings are in the array
+		$data['settings'] = array_merge($this->_EE->config->item('dh:default_settings'), $current);
+
+		$data['member_groups'] = array();
+
+		$this->_EE->load->model('member_model');
+
+		$query = $this->_EE->member_model->get_member_groups();
+
+		foreach ($query->result() as $row)
+		{
+			if (in_array($row->group_id, array(2, 3, 4)))
+			{
+				continue;
+			}
+
+			$data['member_groups'][$row->group_id] = $row->group_title;
+		}
+
 		return $this->_EE->load->view('settings_form',$data,TRUE);
-		
+
 	}
 	// End function settings_form()
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Save Add-on Settings
 	 *
@@ -155,53 +172,53 @@ class Deployment_hooks_ext {
 		{
 			show_error($this->_EE->lang->line('unauthorized_access'));
 		}
-		
+
 		// We no need submit key/value
 		unset($_POST['submit']);
 		foreach ($_POST as $key => $value) {
 			$_POST[$key] = $this->_EE->input->post($key,TRUE);
 		}
-		
+
 		/**
 		 * I'd love to have some form validation here but I can't seem to use
 		 * the CI validation library callback functions within the context
 		 * of extension settings. Skipping this for now.
-		 * 
+		 *
 		 * @link http://expressionengine.com/forums/viewthread/187258/
 		 */
-		
+
 		// if (FALSE)
 		// {
 		// 	// error occurred.
 		// 	// display message and redirect to settings page.
 		// 	$this->_EE->session->set_flashdata(
-		// 		'message_failure', 
+		// 		'message_failure',
 		// 		'message'
 		// 	);
 		// 	$this->_EE->functions->redirect(
 		// 		BASE.AMP.'C=addons_extensions'.AMP.'M=extension_settings'.AMP.'file=deployment_hooks'
 		// 	);
 		// }
-		
+
 		// Update settings in the db
 		$this->_EE->Deployment_hooks_setup_model->update_settings(serialize($_POST));
-		
+
 		// Success, redirect to module home page with success message
 		$this->_EE->session->set_flashdata(
 			'message_success',
 			$this->_EE->lang->line('dh:settings_saved')
 		);
 		$this->_EE->functions->redirect($this->_EE->config->item('dh:mod_url_base'));
-		
+
 	}
 	// End function save_settings()
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Validate GET settings data
-	 * 
+	 *
 	 * @param     string   Form submission value
 	 * @access    public
 	 * @author    Erik Reagan <erik@focuslabllc.com>
@@ -212,13 +229,13 @@ class Deployment_hooks_ext {
 		// exit(__METHOD__);
 	}
 	// End function validate_get()
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Validate GET settings data
-	 * 
+	 *
 	 * @param     string   Form submission value
 	 * @access    public
 	 * @author    Erik Reagan <erik@focuslabllc.com>
@@ -229,10 +246,10 @@ class Deployment_hooks_ext {
 		// exit(__METHOD__);
 	}
 	// End function validate_get()
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Activate Extension
 	 *
@@ -244,7 +261,7 @@ class Deployment_hooks_ext {
 	 */
 	public function activate_extension()
 	{
-		
+
 		/**
 		 * We actually have to install with at least 1 hook otherwise the extension
 		 * doesn't actually get installed. It makes sense to a degree - but we're just
@@ -252,19 +269,19 @@ class Deployment_hooks_ext {
 		 * one day this won't exist.
 		 * @link http://expressionengine.com/forums/viewthread/176691/
 		 */
-		
+
 		/**
 		 * We aren't using this to activate the extension. We can guarantee the installation of
 		 * our extension by doing this in the module UPD file. That way a user can't choose to not
 		 * install the extension which would kill our settings approach. So, nothing to see here.
 		 */
-		
+
 	}
 	// End function activate_extension()
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Disable Extension
 	 *
@@ -279,7 +296,7 @@ class Deployment_hooks_ext {
 		// Nothing here either. See comments for activate_extension()
 	}
 	// End function disable_extension()
-	
+
 }
 // End class Deployment_hooks_ext
 

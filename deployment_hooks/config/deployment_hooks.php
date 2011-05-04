@@ -6,7 +6,7 @@
  * We store many settings in the config file. All are
  * prefixed for clarity throughout the system and config dumps
  * when other devs are debugging.
- * 
+ *
  * @package    DeploymentHooks
  * @author     Focus Lab, LLC <dev@focuslabllc.com>
  * @copyright  Copyright (c) 2011 Focus Lab, LLC
@@ -17,7 +17,7 @@
 
 /**
  * @var    string   Version number
- * 
+ *
  * Also define the version constant to be
  * used in the extension and accessory files
  */
@@ -56,7 +56,9 @@ $config['dh:mod_menu'] = array(
  */
 $config['dh:default_settings'] = array(
 	'dh:get_token' => '',
-	'dh:ip_array'  => ''
+	'dh:ip_array'  => '',
+	'dh:http_auth' => '',
+	'dh:http_auth_member_groups' => array(),
 );
 
 
