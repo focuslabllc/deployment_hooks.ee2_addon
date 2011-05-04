@@ -39,7 +39,8 @@ class Deployment_hooks_upd {
 	public function __construct() 
 	{ 
 		$this->_EE =& get_instance();
-		$this->_EE->load->model('../third_party/deployment_hooks/models/deployment_hooks_setup_model');
+		// EE's use of CI's loader is crazy buggy. I shouldn't have to load resources this way. It gets around the bugs though.
+		$this->_EE->load->model('../third_party/deployment_hooks/models/deployment_hooks_setup_model','Deployment_hooks_setup_model');
 		$this->_EE->load->config('../third_party/deployment_hooks/config/deployment_hooks.php');
 	}
 	// End function __construct()

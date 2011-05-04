@@ -332,12 +332,7 @@ class Deployment_hooks_mcp {
 			// We failed the security check so let's log that and return
 			$this->response[] = lang('dh:security_failed');
 			$this->_log_deployment();
-			if ($this->_debug)
-			{
-				exit('Security check failed. Check Deployment Hooks log for more info.');
-			} else {
-				exit;
-			}
+			exit('Security check failed. Check Deployment Hooks log for more info.');
 		} else {
 			$this->response[] = lang('dh:security_passed');
 		}
