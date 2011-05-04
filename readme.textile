@@ -49,7 +49,7 @@ This would be used to limit the Deployment Hooks execution to your deployment se
 
 h3. HTTP authorization
 
-You can require HTTP authentication using a valid member username and password. The resulting Deployment Hook URL would look like @http://username:password@yoursite.com/?ACT=35@. You must also set which member groups are allowed to have access.
+You can require HTTP authentication using a valid member username and password. The resulting Deployment Hook URL would look like http://username:password@yoursite.com/?ACT=35. You must also set which member groups are allowed to have access.
 
 
 h2. Using the Add-on
