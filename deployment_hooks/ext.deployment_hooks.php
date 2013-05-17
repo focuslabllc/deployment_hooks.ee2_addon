@@ -77,8 +77,9 @@ class Deployment_hooks_ext {
 		// Using the alternative
 		// $this->_EE->load->model('Deployment_hooks_setup_model');
 		// $this->_EE->load->config('deployment_hooks');
-		$this->_EE->load->model('../third_party/deployment_hooks/models/Deployment_hooks_setup_model');
-		$this->_EE->load->config('../third_party/deployment_hooks/config/deployment_hooks');
+		$this->_EE->load->add_package_path(PATH_THIRD.'deployment_hooks/');
+		$this->_EE->load->model('deployment_hooks_setup_model', 'Deployment_hooks_setup_model');
+		$this->_EE->load->config('deployment_hooks');
 	}
 	// End function __construct()
 	
