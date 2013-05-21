@@ -39,9 +39,8 @@ class Deployment_hooks_upd {
 	public function __construct() 
 	{ 
 		$this->_EE =& get_instance();
-		// EE's use of CI's loader is crazy buggy. I shouldn't have to load resources this way. It gets around the bugs though.
-		$this->_EE->load->add_package_path(PATH_THIRD.'deployment_hooks/', 'Deployment_hooks_setup_model');
-		$this->_EE->load->model('deployment_hooks_setup_model');
+		$this->_EE->load->add_package_path(PATH_THIRD.'deployment_hooks/');
+		$this->_EE->load->model('deployment_hooks_setup_model', 'Deployment_hooks_setup_model');
 		$this->_EE->load->config('deployment_hooks');
 	}
 	// End function __construct()
